@@ -32,10 +32,10 @@ jobs:
         pip install icalendar
         pip install chevron
         pip install humanize
-    - name: Run main
+    - name: Run Generation
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        python main.py
+        python generate.py
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload artifact
