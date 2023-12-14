@@ -1,0 +1,18 @@
+<!doctype HTML>
+<head>
+    <title>{{ name }}</title>
+</head>
+<body>
+
+{{#events }}
+<h2>{{ summary }}</h2>
+
+<p>{{ start.month }}/{{start.day}}, {{start.hour}} --- {{ duration.human }}</p>
+<p>Location: <em>{{ location }}</em></p>
+
+{{ description }}
+    <hr />
+{{/events}}
+
+</body>
+</html>
