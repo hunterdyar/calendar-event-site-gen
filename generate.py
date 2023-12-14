@@ -1,7 +1,7 @@
+import icalendar
 import datetime
 import json
 import urllib.request
-import icalendar
 import chevron
 import humanize
 
