@@ -85,7 +85,7 @@ def main():
     output_file = settings["output_file"]
     calendar = get_calendar_data(settings["calendar_url"])
 
-    with open(output_file,'w',encoding = "utf-8") as f:
+    with open(output_file,'w+',encoding = "utf-8") as f:
         f.write(render(get_template_data(), calendar))
 
     print("finished.")
