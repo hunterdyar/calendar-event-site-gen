@@ -1,4 +1,5 @@
 #built ins
+import argparse
 import shutil
 from datetime import datetime
 import json
@@ -119,6 +120,10 @@ def apply_default_settings(settings):
     if "timezone" not in settings:
         settings["timezone"] = ""
     return settings
+
+parser = argparse.ArgumentParser(description="Generate Calendar Event Site")
+parser.add_argument("url", help="a public .ics calendar URL to use as a source.")
+
 def main():
     # we should use command line arguments for the import settings and output file, so github can use SECRETS to make forking the project even easier.
     # import settings
@@ -128,7 +133,9 @@ def main():
 
     # get calendar and data
     output_file = settings["output_folder"]+settings["output_file"]
-    calendar = get_calendar_data(settings["calendar_url"])
+    args = parser.parse_args()
+
+    calendar = get_calendar_data(args.url)
     # copy over static folder if it exists.
     shutil.copytree(settings["static_folder"], settings["output_folder"], dirs_exist_ok=True)
 

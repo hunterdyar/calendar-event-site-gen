@@ -35,7 +35,7 @@ jobs:
     - name: Run Generation
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        python generate.py
+        python generate.py ${{ vars.CALENDAR_URL }}
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload artifact
