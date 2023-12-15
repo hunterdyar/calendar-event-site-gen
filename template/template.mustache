@@ -2,17 +2,23 @@
 <head>
     <title>{{ name }}</title>
 </head>
+<link rel="stylesheet" href="style.css" />
 <body>
 
+
+<article>
+    <h1>{{ name }}</h1>
 {{#events }}
 <h2>{{ summary }}</h2>
-
-<p>{{ start.month }}/{{start.day}}, {{start.hour}} --- {{ duration.human }}</p>
+<p>{{ datetime }} --- {{ duration.human }}</p>
 <p>Location: <em>{{ location }}</em></p>
-
-{{ description }}
-    <hr />
+{{{ description }}}
+<hr />
+{{/events}}
+{{^events}}
+  <p>No events.</p>
 {{/events}}
 
+</article>
 </body>
 </html>
