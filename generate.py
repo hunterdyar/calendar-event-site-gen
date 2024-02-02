@@ -46,11 +46,12 @@ def render(template, calendar, settings, include_past=False):
     if settings['timezone']:
         args['timezone'] = settings['timezone']
 
+
     args['events'] = []
     skipped = 0
     rendered = 0
     total = 0
-
+    max = settings["max_events"]
     for event in calendar.walk('VEVENT'):
         total += 1
         ndt = event.get('DTSTART').dt
@@ -63,6 +64,10 @@ def render(template, calendar, settings, include_past=False):
             if start < arrow.utcnow():
                 skipped += 1
                 continue
+        # if maxEvents is not 'all'
+        if max > 0:
+            if rendered >= max:
+                break;
 
         # start = start.replace(tzinfo=timezone.utc).astimezone(tz=ZoneInfo(args["timezone"]))
         stamp = arrow.Arrow.fromdatetime(event.get('dtstamp').dt)
@@ -125,6 +130,8 @@ def apply_default_settings(settings):
         settings["time_format"] = "%-I:%M %p %Z"
     if "timezone" not in settings:
         settings["timezone"] = ""
+    if "max_events" not in settings:
+        settings["max_events"] = -1
     return settings
 
 

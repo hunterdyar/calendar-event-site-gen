@@ -2,5 +2,6 @@
   "static_folder": "static/",
   "title": "Test Calendar",
   "date_format": "dddd, MMMM d, YYYY. h:mma ZZZ",
-  "lang": "en"
+  "lang": "en",
+  "max_events": 2
 }
