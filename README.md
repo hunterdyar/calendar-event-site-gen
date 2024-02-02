@@ -1,3 +1,9 @@
+#IMM Upcoming Events
+
+Displays upcoming events for the Chatham Immersive Media Lab.
+https://chatham-immersive-media-lab.github.io/upcoming-events-site/
+
+
 # Calendar Events Site Generator
 Generate static single serving websites for events from a calendar
 
