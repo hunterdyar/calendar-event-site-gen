@@ -1,4 +1,4 @@
-#IMM Upcoming Events
+# IMM Upcoming Events
 
 Displays upcoming events for the Chatham Immersive Media Lab.
 https://chatham-immersive-media-lab.github.io/upcoming-events-site/
