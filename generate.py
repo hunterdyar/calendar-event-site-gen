@@ -8,6 +8,7 @@ import urllib.request
 import icalendar
 import chevron
 import arrow
+from icalendar import vText
 
 
 def get_template_data():
@@ -67,7 +68,15 @@ def render(template, calendar, settings, include_past=False):
         # if maxEvents is not 'all'
         if max > 0:
             if rendered >= max:
+                #stop!
                 break;
+
+        # skip all day events, they dont have timezones
+        allday = event.get('X-MICROSOFT-CDO-ALLDAYEVENT')
+        if allday == vText("TRUE"):
+            skipped += 1
+            # should handle this better
+            continue
 
         # start = start.replace(tzinfo=timezone.utc).astimezone(tz=ZoneInfo(args["timezone"]))
         stamp = arrow.Arrow.fromdatetime(event.get('dtstamp').dt)
@@ -75,6 +84,12 @@ def render(template, calendar, settings, include_past=False):
 
         end = arrow.Arrow.fromdatetime(event.get('DTEND').dt)
         description = event.get('x-alt-desc')
+
+        #skip cancelled events
+        busystatus = event.get('X-MICROSOFT-CDO-BUSYSTATUS')
+        if busystatus == vText("FREE"):
+            skipped += 1
+            continue
 
         if not description:
             description = event.get('description')

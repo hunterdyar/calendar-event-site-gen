@@ -3,5 +3,5 @@
   "title": "Test Calendar",
   "date_format": "dddd, MMMM d, YYYY. h:mma ZZZ",
   "lang": "en",
-  "max_events": 2
+  "max_events": 1
 }
