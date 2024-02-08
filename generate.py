@@ -1,13 +1,14 @@
-#built ins
+# built ins
 import argparse
 import shutil
 from datetime import datetime
 import json
 import urllib.request
-#external deps
+# external deps
 import icalendar
 import chevron
 import arrow
+from icalendar import vText
 
 
 def get_template_data():
@@ -46,25 +47,49 @@ def render(template, calendar, settings, include_past=False):
     if settings['timezone']:
         args['timezone'] = settings['timezone']
 
+
     args['events'] = []
     skipped = 0
     rendered = 0
     total = 0
-
+    max = settings["max_events"]
     for event in calendar.walk('VEVENT'):
         total += 1
-        start = arrow.Arrow.fromdatetime(event.get('DTSTART').dt)
+        ndt = event.get('DTSTART').dt
+        try:
+            start = arrow.Arrow.fromdatetime(ndt)
+        except:
+            continue
+
         if not include_past:
             if start < arrow.utcnow():
                 skipped += 1
                 continue
+        # if maxEvents is not 'all'
+        if max > 0:
+            if rendered >= max:
+                #stop!
+                break;
 
-       # start = start.replace(tzinfo=timezone.utc).astimezone(tz=ZoneInfo(args["timezone"]))
+        # skip all day events, they dont have timezones
+        allday = event.get('X-MICROSOFT-CDO-ALLDAYEVENT')
+        if allday == vText("TRUE"):
+            skipped += 1
+            # should handle this better
+            continue
+
+        # start = start.replace(tzinfo=timezone.utc).astimezone(tz=ZoneInfo(args["timezone"]))
         stamp = arrow.Arrow.fromdatetime(event.get('dtstamp').dt)
-       # stamp = stamp.replace(tzinfo=timezone.utc).astimezone(tz=ZoneInfo(args["timezone"]))
+        # stamp = stamp.replace(tzinfo=timezone.utc).astimezone(tz=ZoneInfo(args["timezone"]))
 
         end = arrow.Arrow.fromdatetime(event.get('DTEND').dt)
         description = event.get('x-alt-desc')
+
+        #skip cancelled events
+        busystatus = event.get('X-MICROSOFT-CDO-BUSYSTATUS')
+        if busystatus == vText("FREE"):
+            skipped += 1
+            continue
 
         if not description:
             description = event.get('description')
@@ -89,7 +114,7 @@ def render(template, calendar, settings, include_past=False):
             'start_human': start.humanize(),
             'duration': {
                 'human': duration,
-                #'human_no_seconds': humanize.precisedelta(duration, minimum_unit="minutes"),
+                # 'human_no_seconds': humanize.precisedelta(duration, minimum_unit="minutes"),
                 'duration_total_seconds': total_seconds,
                 'hms': str(duration)
             },
@@ -103,6 +128,7 @@ def render(template, calendar, settings, include_past=False):
     out = chevron.render(template, args)
     print(f"Rendered: {rendered}. Skipped: {skipped}. Total: {total} events")
     return out
+
 
 def apply_default_settings(settings):
     if "date_format" not in settings:
@@ -119,10 +145,14 @@ def apply_default_settings(settings):
         settings["time_format"] = "%-I:%M %p %Z"
     if "timezone" not in settings:
         settings["timezone"] = ""
+    if "max_events" not in settings:
+        settings["max_events"] = -1
     return settings
+
 
 parser = argparse.ArgumentParser(description="Generate Calendar Event Site")
 parser.add_argument("url", help="a public .ics calendar URL to use as a source.")
+
 
 def main():
     # we should use command line arguments for the import settings and output file, so github can use SECRETS to make forking the project even easier.
@@ -132,7 +162,7 @@ def main():
         settings = apply_default_settings(settings)
 
     # get calendar and data
-    output_file = settings["output_folder"]+settings["output_file"]
+    output_file = settings["output_folder"] + settings["output_file"]
     args = parser.parse_args()
 
     calendar = get_calendar_data(args.url)
@@ -140,7 +170,7 @@ def main():
     shutil.copytree(settings["static_folder"], settings["output_folder"], dirs_exist_ok=True)
 
     # render and write file
-    with open(output_file,'w+', encoding = "utf-8") as f:
+    with open(output_file, 'w+', encoding="utf-8") as f:
         f.write(render(get_template_data(), calendar, settings))
     print(f"Finished Generation.")
 

@@ -8,17 +8,21 @@
 
 <article>
     <h1>{{ name }}</h1>
+    <hr />
 {{#events }}
 <h2>{{ summary }}</h2>
-<p>{{ datetime }} --- {{ duration.human }}</p>
-<p>Location: <em>{{ location }}</em></p>
+<p>{{ stamp.datetime }} --- {{ duration.human }}</p>
+
+{{#location}}
+    <p>Location: <em>{{ location }}</em></p>
+{{/location}}
+
+
 {{{ description }}}
-<hr />
 {{/events}}
 {{^events}}
   <p>No events.</p>
 {{/events}}
-
 </article>
 </body>
 </html>

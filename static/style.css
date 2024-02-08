@@ -1,5 +1,28 @@
+@font-face {
+        font-family: 'Dry Whiteboard Marker';
+        src: url('fonts/DryWhiteboardMarker-Regular.woff2') format('woff2'),
+            url('fonts/DryWhiteboardMarker-Regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+
 article {
     max-width: 520px;
     margin-left: auto;
     margin-right: auto;
+
+}
+
+h1,p,h2 {
+    font-family: "Dry Whiteboard Marker";
+}
+
+h1 {
+    font-size: large;
+}
+
+h2 {
+    font-size: x-large;
+    font-weight: bold;
 }
